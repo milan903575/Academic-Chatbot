@@ -1,0 +1,3814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Study - Ultra-Robust Academic Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==============================================
+           GLOBAL STYLES & RESET
+           ============================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100vw;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ==============================================
+           HEADER SECTION
+           ============================================== */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-radius: 0 0 20px 20px;
+            flex-shrink: 0;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '\f19d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 2rem;
+            color: #4682B4;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(135, 206, 235, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(135, 206, 235, 0.3);
+            position: relative;
+            top: -4px;
+        }
+
+        .user-info span {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* ==============================================
+           BUTTON COMPONENTS
+           ============================================== */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #708090 0%, #2F4F4F 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #20B2AA 0%, #008B8B 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #2c3e50;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #00CED1 0%, #48CAE4 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* ==============================================
+           MAIN LAYOUT STRUCTURE
+           ============================================== */
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+            max-width: 100vw;
+        }
+
+        /* Sidebar with dual-section layout for groups and members */
+        .sidebar {
+            width: 350px;
+            min-width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4682B4, #1E90FF, #00BFFF, #87CEEB);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .sidebar-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        .sidebar-section:first-child {
+            border-bottom: 2px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .sidebar-section:last-child {
+            padding-top: 1rem;
+        }
+
+        /* Main chat area with optimized layout */
+        .chat-area {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .chat-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4682B4, #1E90FF, #00BFFF, #87CEEB);
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* ==============================================
+           CONTENT SECTION STYLING
+           ============================================== */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            padding-bottom: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4682B4, #1E90FF);
+            border-radius: 2px;
+        }
+
+        /* ==============================================
+           FORM COMPONENTS
+           ============================================== */
+        .group-form {
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            color: #2c3e50;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4682B4;
+            box-shadow: 0 0 20px rgba(70, 130, 180, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ==============================================
+           GROUP LIST COMPONENTS
+           ============================================== */
+        .groups-list {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 0;
+        }
+
+        .group-item {
+            background: rgba(135, 206, 235, 0.1);
+            border: 2px solid rgba(135, 206, 235, 0.2);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .group-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(70, 130, 180, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .group-item:hover::before {
+            left: 100%;
+        }
+
+        .group-item:hover {
+            background: rgba(135, 206, 235, 0.2);
+            border-color: #4682B4;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(70, 130, 180, 0.15);
+        }
+
+        .group-item.active {
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            color: white;
+            border-color: #1E90FF;
+            box-shadow: 0 10px 30px rgba(70, 130, 180, 0.3);
+        }
+
+        .group-name {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .group-meta {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ==============================================
+           CHAT INTERFACE COMPONENTS
+           ============================================== */
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid rgba(135, 206, 235, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            background: rgba(135, 206, 235, 0.05);
+            flex-shrink: 0;
+        }
+
+        .chat-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .threads-container {
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid rgba(135, 206, 235, 0.2);
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(135, 206, 235, 0.03);
+            flex-shrink: 0;
+        }
+
+        .thread-item {
+            background: rgba(135, 206, 235, 0.1);
+            border: 2px solid rgba(135, 206, 235, 0.2);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .thread-item:hover {
+            background: rgba(135, 206, 235, 0.2);
+            border-color: #4682B4;
+            transform: translateX(5px);
+        }
+
+        .thread-item.active {
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            color: white;
+            border-color: #1E90FF;
+            box-shadow: 0 5px 15px rgba(70, 130, 180, 0.3);
+        }
+
+        /* ==============================================
+           MESSAGE DISPLAY SYSTEM
+           ============================================== */
+        /* Optimized messages container with dynamic scrolling */
+        .messages-container {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: rgba(135, 206, 235, 0.02);
+            min-height: 0;
+        }
+
+        /* Individual message styling with animations */
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            animation: messageSlideIn 0.3s ease-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.own {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message.other {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-header {
+            font-size: 0.75rem;
+            color: #5a6c7d;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.8rem 1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(135, 206, 235, 0.3);
+            word-wrap: break-word;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .message.own .message-content {
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            color: white;
+            border-color: #1E90FF;
+        }
+
+        .message.gpt .message-content {
+            background: linear-gradient(135deg, #20B2AA 0%, #008B8B 100%);
+            color: white;
+            border-color: #008B8B;
+        }
+
+        .message.file .message-content {
+            background: linear-gradient(135deg, #00CED1 0%, #48CAE4 100%);
+            color: white;
+            border-color: #48CAE4;
+        }
+
+        /* ==============================================
+           AI ASSISTANT COMPONENTS
+           ============================================== */
+        .ai-loading-message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            align-self: flex-start;
+            align-items: flex-start;
+            animation: messageSlideIn 0.3s ease-out;
+            flex-shrink: 0;
+        }
+
+        .ai-loading-content {
+            background: rgba(32, 178, 170, 0.1);
+            border: 2px solid rgba(32, 178, 170, 0.3);
+            padding: 0.8rem 1rem;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #008B8B;
+            font-style: italic;
+        }
+
+        .ai-loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(32, 178, 170, 0.3);
+            border-top: 2px solid #20B2AA;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* GPT response with enhanced markdown support */
+        .gpt-response {
+            background: rgba(32, 178, 170, 0.1);
+            border: 2px solid rgba(32, 178, 170, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            line-height: 1.6;
+            color: #1a5d5a;
+        }
+
+        .gpt-response h1, .gpt-response h2, .gpt-response h3, 
+        .gpt-response h4, .gpt-response h5, .gpt-response h6 {
+            margin: 1rem 0 0.5rem 0;
+            color: #0f4c4a;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .gpt-response h1 { font-size: 1.4rem; }
+        .gpt-response h2 { font-size: 1.2rem; }
+        .gpt-response h3 { font-size: 1.1rem; }
+        .gpt-response h4, .gpt-response h5, .gpt-response h6 { font-size: 1rem; }
+
+        .gpt-response p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+
+        .gpt-response strong {
+            font-weight: 700;
+            color: #0a3f3c;
+        }
+
+        .gpt-response em {
+            font-style: italic;
+            color: #1a5d5a;
+        }
+
+        .gpt-response code {
+            background: rgba(15, 76, 74, 0.1);
+            border: 1px solid rgba(15, 76, 74, 0.2);
+            border-radius: 4px;
+            padding: 0.2rem 0.4rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #0f4c4a;
+        }
+
+        .gpt-response pre {
+            background: rgba(15, 76, 74, 0.1);
+            border: 1px solid rgba(15, 76, 74, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .gpt-response pre code {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .gpt-response ul, .gpt-response ol {
+            margin: 0.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .gpt-response ul {
+            list-style-type: disc;
+        }
+
+        .gpt-response ol {
+            list-style-type: decimal;
+        }
+
+        .gpt-response li {
+            margin: 0.3rem 0;
+            line-height: 1.5;
+        }
+
+        .gpt-response blockquote {
+            border-left: 4px solid rgba(15, 76, 74, 0.3);
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+            font-style: italic;
+            color: #1a5d5a;
+        }
+
+        .gpt-response a {
+            color: #20B2AA;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .gpt-response a:hover {
+            color: #008B8B;
+            text-decoration: none;
+        }
+
+        .gpt-response hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(15, 76, 74, 0.3), transparent);
+            margin: 1rem 0;
+        }
+
+        .gpt-response table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        .gpt-response th, .gpt-response td {
+            border: 1px solid rgba(15, 76, 74, 0.2);
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .gpt-response th {
+            background: rgba(15, 76, 74, 0.1);
+            font-weight: 600;
+            color: #0f4c4a;
+        }
+
+        /* ==============================================
+           FILE SHARING SYSTEM
+           ============================================== */
+        .file-attachment {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.8rem;
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+        }
+
+        .file-preview-container {
+            margin-top: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(135, 206, 235, 0.05);
+            border: 1px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .file-preview {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .file-preview:hover {
+            transform: scale(1.02);
+        }
+
+        .pdf-preview {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            display: block;
+        }
+
+        .pdf-fallback {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 8px;
+            border: 2px dashed rgba(135, 206, 235, 0.3);
+        }
+
+        .document-preview {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .video-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+
+        .audio-preview {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .preview-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            backdrop-filter: blur(10px);
+        }
+
+        .preview-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .preview-close:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .file-loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .file-error {
+            text-align: center;
+            padding: 1rem;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: #4682B4;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: #5a6c7d;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* ==============================================
+           MESSAGE INPUT SYSTEM
+           ============================================== */
+        /* Fixed message input at bottom of chat */
+        .message-input-container {
+            padding: 1rem 1.5rem;
+            border-top: 2px solid rgba(135, 206, 235, 0.2);
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-end;
+            background: rgba(135, 206, 235, 0.05);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 25px;
+            resize: none;
+            max-height: 100px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            overflow-y: auto;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #4682B4;
+            box-shadow: 0 0 20px rgba(70, 130, 180, 0.2);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            background: linear-gradient(135deg, #708090 0%, #2F4F4F 100%);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-input-label:hover {
+            background: linear-gradient(135deg, #2F4F4F 0%, #708090 100%);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ==============================================
+           MODAL SYSTEM
+           ============================================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4682B4, #1E90FF, #00BFFF, #87CEEB);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4682B4 0%, #1E90FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #5a6c7d;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* ==============================================
+           NOTIFICATION SYSTEM
+           ============================================== */
+        .alert {
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(32, 178, 170, 0.1);
+            color: #008B8B;
+            border-left-color: #20B2AA;
+        }
+
+        .alert-error {
+            background: rgba(220, 20, 60, 0.1);
+            color: #B22222;
+            border-left-color: #DC143C;
+        }
+
+        .alert-info {
+            background: rgba(0, 191, 255, 0.1);
+            color: #1E90FF;
+            border-left-color: #00BFFF;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #5a6c7d;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .empty-state h2, .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #34495e;
+            font-weight: 700;
+        }
+
+        .empty-state ul {
+            text-align: left;
+            display: inline-block;
+            background: rgba(135, 206, 235, 0.1);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .empty-state li {
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(135, 206, 235, 0.3);
+            border-top: 3px solid #4682B4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ==============================================
+           MEMBER LIST COMPONENTS
+           ============================================== */
+        .member-list {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 0;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+            border-radius: 10px;
+            margin-bottom: 0.4rem;
+            background: rgba(135, 206, 235, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .member-item:hover {
+            background: rgba(135, 206, 235, 0.1);
+            transform: translateX(5px);
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .member-role {
+            font-size: 0.8rem;
+            color: #5a6c7d;
+        }
+
+        .gpt-indicator {
+            display: inline-block;
+            background: linear-gradient(135deg, #20B2AA 0%, #008B8B 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 0.8rem;
+            box-shadow: 0 2px 8px rgba(32, 178, 170, 0.3);
+        }
+
+        .file-indicator {
+            display: inline-block;
+            background: linear-gradient(135deg, #00CED1 0%, #48CAE4 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0, 206, 209, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(135, 206, 235, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.8rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4682B4, #1E90FF);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* ==============================================
+           TOAST NOTIFICATION SYSTEM
+           ============================================== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: toastSlideIn 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid #20B2AA;
+        }
+
+        .toast.error {
+            border-left: 4px solid #DC143C;
+        }
+
+        .toast.info {
+            border-left: 4px solid #1E90FF;
+        }
+
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .toast-body {
+            color: #5a6c7d;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #5a6c7d;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toast-close:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .file-confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 1500;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .file-confirm-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        /* ==============================================
+           REAL-TIME FEATURES
+           ============================================== */
+        .typing-indicator {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 15px;
+            border-left: 3px solid #4682B4;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #4682B4;
+        }
+
+        .typing-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.2rem;
+        }
+
+        .typing-dots span {
+            width: 4px;
+            height: 4px;
+            background: #4682B4;
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingDot {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .member-online {
+            position: relative;
+        }
+
+        .member-online::before {
+            content: '';
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            width: 8px;
+            height: 8px;
+            background: #20B2AA;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .has-new-messages {
+            animation: pulse 2s infinite;
+            border-color: #1E90FF !important;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes toastSlideOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* ==============================================
+           RESPONSIVE DESIGN
+           ============================================== */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 320px;
+                min-width: 320px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: 45vh;
+            }
+
+            .chat-area {
+                height: 50vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+                height: auto;
+            }
+
+            .main-content {
+                height: calc(100vh - 120px);
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .user-info {
+                justify-content: center;
+                padding: 0.6rem 1.2rem;
+            }
+
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .sidebar-section {
+                padding: 1rem;
+            }
+
+            .chat-actions {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                gap: 0.5rem;
+            }
+
+            .messages-container {
+                padding: 1rem;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.3rem;
+                gap: 0.5rem;
+            }
+
+            .sidebar-section {
+                padding: 0.8rem;
+            }
+
+            .form-input {
+                padding: 0.8rem;
+            }
+
+            .btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .chat-header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .message-input-container {
+                padding: 0.8rem 1rem;
+                gap: 0.6rem;
+            }
+
+            .message-input {
+                padding: 0.6rem 1rem;
+            }
+        }
+
+        /* ==============================================
+           CUSTOM SCROLLBARS
+           ============================================== */
+        .messages-container::-webkit-scrollbar,
+        .threads-container::-webkit-scrollbar,
+        .member-list::-webkit-scrollbar,
+        .groups-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track,
+        .threads-container::-webkit-scrollbar-track,
+        .member-list::-webkit-scrollbar-track,
+        .groups-list::-webkit-scrollbar-track {
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb,
+        .threads-container::-webkit-scrollbar-thumb,
+        .member-list::-webkit-scrollbar-thumb,
+        .groups-list::-webkit-scrollbar-thumb {
+            background: rgba(70, 130, 180, 0.5);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover,
+        .threads-container::-webkit-scrollbar-thumb:hover,
+        .member-list::-webkit-scrollbar-thumb:hover,
+        .groups-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(70, 130, 180, 0.7);
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <!-- ==============================================
+         APPLICATION CONTAINER
+         ============================================== -->
+    <div class="container">
+        <!-- Header with logo and user info -->
+        <header class="header">
+            <a href="/" class="logo">Academic Group Study</a>
+            <div class="user-info">
+                <span id="userWelcome">Welcome, User!</span>
+                <button onclick="logout()" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Main content area with sidebar and chat -->
+        <main class="main-content">
+            <!-- Sidebar with groups and members -->
+            <aside class="sidebar">
+                <!-- Groups management section -->
+                <div class="sidebar-section">
+                    <div class="section-title">Study Groups</div>
+                    
+                    <div class="group-form">
+                        <button onclick="showCreateGroupModal()" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
+                            <i class="fas fa-plus"></i> Create New Group
+                        </button>
+                        <button onclick="showJoinGroupModal()" class="btn btn-success" style="width: 100%;">
+                            <i class="fas fa-link"></i> Join Group
+                        </button>
+                    </div>
+
+                    <div class="groups-list">
+                        <div id="groupsList">
+                            <div class="empty-state">
+                                <h3>No Groups Yet</h3>
+                                <p>Create or join a group to start studying together!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group members section -->
+                <div class="sidebar-section">
+                    <div class="section-title">Group Members</div>
+                    <div id="membersList" class="member-list">
+                        <div class="empty-state">
+                            <h3>No Group Selected</h3>
+                            <p>Select a group to view members</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main chat interface -->
+            <section class="chat-area">
+                <!-- Welcome screen shown when no group is selected -->
+                <div id="chatWelcome" class="empty-state" style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <h2><i class="fas fa-graduation-cap"></i> Welcome to Academic Group Study!</h2>
+                    <p>Select a group to start collaborative learning</p>
+                    <div style="margin-top: 2rem;">
+                        <h3>Features Available:</h3>
+                        <ul style="text-align: left; margin-top: 1rem;">
+                            <li><i class="fas fa-book"></i> Real-time group discussions</li>
+                            <li><i class="fas fa-list"></i> Organized threaded conversations</li>
+                            <li><i class="fas fa-robot"></i> assistance with <strong>@sana</strong></li>
+                            <li><i class="fas fa-paperclip"></i> File sharing and collaboration</li>
+                            <li><i class="fas fa-users"></i> Member management for admins</li>
+                            <li><i class="fas fa-lock"></i> Secure group access with codes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chat interface shown when a group is selected -->
+                <div id="chatInterface" style="display: none; flex: 1; flex-direction: column; height: 100%;">
+                    <!-- Chat header with group info and actions -->
+                    <div class="chat-header">
+                        <div>
+                            <div class="chat-title" id="chatTitle">Group Chat</div>
+                            <div style="font-size: 0.8rem; color: #666;" id="chatSubtitle">Select a thread to start chatting</div>
+                        </div>
+                        <div class="chat-actions">
+                            <button onclick="showCreateThreadModal()" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> New Thread
+                            </button>
+                            <button onclick="showFilesModal()" class="btn btn-info">
+                                <i class="fas fa-paperclip"></i> Files
+                            </button>
+                            <button onclick="showGroupInfo()" class="btn btn-secondary">
+                                <i class="fas fa-info-circle"></i> Group Info
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Threads navigation -->
+                    <div class="threads-container">
+                        <div id="threadsList">
+                            <div class="thread-item" onclick="selectThread(null)">
+                                <i class="fas fa-bullhorn"></i> Select a thread to view messages
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Messages display area -->
+                    <div class="messages-container" id="messagesContainer">
+                        <div class="empty-state">
+                            <h3>Select a Thread</h3>
+                            <p>Choose a thread from above to start the conversation</p>
+                        </div>
+                    </div>
+
+                    <!-- Message input area -->
+                    <div class="message-input-container" id="messageInputContainer" style="display: none;">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="fileInput" class="file-input" onchange="handleFileSelect(event)">
+                            <label for="fileInput" class="file-input-label" title="Share a file">
+                                <i class="fas fa-paperclip"></i>
+                            </label>
+                        </div>
+                        <textarea 
+                            id="messageInput" 
+                            class="message-input" 
+                            placeholder="Type your message... Use @sana for GPT assistance"
+                            rows="1"
+                            onkeydown="handleMessageKeydown(event)"
+                        ></textarea>
+                        <button onclick="sendMessage()" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+
+                    <!-- File upload progress indicator -->
+                    <div id="fileUploadProgress" style="display: none; padding: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span>Uploading file...</span>
+                            <div class="progress-bar" style="flex: 1;">
+                                <div class="progress-fill" id="uploadProgressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==============================================
+         TOAST NOTIFICATION SYSTEM
+         ============================================== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==============================================
+         MODAL DIALOGS
+         ============================================== -->
+    
+    <!-- File Upload Confirmation Modal -->
+    <div id="fileConfirmModal" class="file-confirm-modal">
+        <div class="file-confirm-content">
+            <h3 style="margin-bottom: 1rem; color: #2c3e50;">
+                <i class="fas fa-upload" style="color: #4682B4;"></i> Confirm File Upload
+            </h3>
+            <div id="fileConfirmInfo" style="margin-bottom: 1.5rem; color: #5a6c7d;"></div>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="confirmFileUpload()" class="btn btn-success">
+                    <i class="fas fa-check"></i> Yes, Share File
+                </button>
+                <button onclick="cancelFileUpload()" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="createGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Study Group</h2>
+                <button class="close-btn" onclick="closeModal('createGroupModal')">&times;</button>
+            </div>
+            <form onsubmit="createGroup(event)">
+                <div class="form-group">
+                    <label class="form-label">Group Name *</label>
+                    <input type="text" id="groupName" class="form-input" required maxlength="100" placeholder="e.g., Advanced Mathematics Study Group">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="groupDescription" class="form-input form-textarea" placeholder="Describe what this group will study..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <input type="text" id="groupSubject" class="form-input" placeholder="e.g., Mathematics, Physics, Computer Science">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Maximum Members</label>
+                    <input type="number" id="maxMembers" class="form-input" min="2" max="100" value="50">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeModal('createGroupModal')" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Group</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Join Group Modal -->
+    <div id="joinGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Join Study Group</h2>
+                <button class="close-btn" onclick="closeModal('joinGroupModal')">&times;</button>
+            </div>
+            <form onsubmit="joinGroup(event)">
+                <div class="form-group">
+                    <label class="form-label">Group Code *</label>
+                    <input type="text" id="groupCode" class="form-input" required maxlength="8" placeholder="Enter 8-character group code" style="text-transform: uppercase;">
+                </div>
+                <div class="alert alert-info">
+                    <strong><i class="fas fa-lightbulb"></i> Tip:</strong> Ask the group admin for the group code to join their study session.
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeModal('joinGroupModal')" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-success">Join Group</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Thread Modal -->
+    <div id="createThreadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Thread</h2>
+                <button class="close-btn" onclick="closeModal('createThreadModal')">&times;</button>
+            </div>
+            <form onsubmit="createThread(event)">
+                <div class="form-group">
+                    <label class="form-label">Thread Title *</label>
+                    <input type="text" id="threadTitle" class="form-input" required maxlength="200" placeholder="e.g., Calculus Problems Discussion">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="threadDescription" class="form-input form-textarea" placeholder="Describe what this thread is about..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeModal('createThreadModal')" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Thread</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Group Information Modal -->
+    <div id="groupInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Group Information</h2>
+                <button class="close-btn" onclick="closeModal('groupInfoModal')">&times;</button>
+            </div>
+            <div id="groupInfoContent">
+                <!-- Dynamic content populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Files Management Modal -->
+    <div id="filesModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-paperclip"></i> Shared Files</h2>
+                <button class="close-btn" onclick="closeModal('filesModal')">&times;</button>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <button onclick="filterFiles('all')" class="btn btn-secondary btn-sm">All Files</button>
+                <button onclick="filterFiles('image')" class="btn btn-secondary btn-sm">Images</button>
+                <button onclick="filterFiles('document')" class="btn btn-secondary btn-sm">Documents</button>
+                <button onclick="filterFiles('video')" class="btn btn-secondary btn-sm">Videos</button>
+                <button onclick="filterFiles('audio')" class="btn btn-secondary btn-sm">Audio</button>
+            </div>
+            <div id="filesContent" style="max-height: 400px; overflow-y: auto;">
+                <!-- Dynamic content populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+<script>
+/* ==============================================
+   APPLICATION CORE VARIABLES
+   ============================================== */
+
+// User authentication and session management
+let currentUser = null;                    // Current authenticated user object
+let currentGroup = null;                   // Currently selected study group
+let currentThread = null;                  // Currently selected discussion thread
+let groups = [];                           // Array of user's study groups
+let messages = [];                         // Current thread's messages
+let selectedFile = null;                   // File selected for upload
+
+// Real-time messaging system variables
+let groupSocket = null;                    // Socket.IO connection for real-time messaging
+let currentGroupRoom = null;               // Current group room for Socket.IO
+let typingTimer = null;                    // Timer for typing indicator
+let isTyping = false;                      // User typing status
+let onlineUsers = new Set();               // Set of currently online user IDs
+let aiLoadingMessageId = null;             // ID of AI loading message
+
+/* ==============================================
+   SERVER TIME SYNCHRONIZATION SYSTEM
+   ============================================== */
+
+/**
+ * Professional-grade time synchronization class
+ * Handles server-client time differences for accurate timestamps
+ */
+class TimeSync {
+    constructor() {
+        this.serverTimeOffset = 0;         // Millisecond difference between server and client time
+        this.lastSyncTime = 0;             // Timestamp of last successful sync
+        this.syncInterval = 10 * 60 * 1000; // Re-sync every 10 minutes
+        this.maxRetries = 3;               // Maximum retry attempts for failed sync
+        this.isInitialized = false;        // Sync initialization status
+        this.fallbackMode = false;         // Fallback to client time if sync fails
+    }
+
+    /**
+     * Initialize time synchronization system
+     * @returns {Promise<boolean>} Success status
+     */
+    async initialize() {
+        const success = await this.syncWithServer();
+        if (success) {
+            this.startPeriodicSync();
+            this.isInitialized = true;
+            this.fallbackMode = false;
+        } else {
+            this.isInitialized = false;
+            this.fallbackMode = true;
+            // Continue with fallback mode for better user experience
+            startTimestampUpdates();
+        }
+        return success;
+    }
+
+    /**
+     * Synchronize with server time with automatic retry
+     * @param {number} retryCount - Current retry attempt
+     * @returns {Promise<boolean>} Success status
+     */
+    async syncWithServer(retryCount = 0) {
+        try {
+            const startTime = performance.now();
+            const response = await fetch('/api/server-time');
+            const endTime = performance.now();
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error || 'Server time API failed');
+            }
+
+            // Calculate network latency compensation for accurate sync
+            const networkDelay = (endTime - startTime) / 2;
+            const serverTime = new Date(data.server_time).getTime() + networkDelay;
+            const clientTime = Date.now();
+            
+            this.serverTimeOffset = serverTime - clientTime;
+            this.lastSyncTime = clientTime;
+            this.fallbackMode = false;
+            
+            return true;
+        } catch (error) {
+            if (retryCount < this.maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+                return this.syncWithServer(retryCount + 1);
+            }
+            
+            // Enable fallback mode for graceful degradation
+            this.fallbackMode = true;
+            return false;
+        }
+    }
+
+    /**
+     * Start periodic time synchronization
+     */
+    startPeriodicSync() {
+        setInterval(() => {
+            this.syncWithServer();
+        }, this.syncInterval);
+    }
+
+    /**
+     * Get current server time (with fallback to client time)
+     * @returns {Date} Current server time
+     */
+    getServerTime() {
+        if (this.fallbackMode) {
+            return new Date(); // Fallback to client time
+        }
+        return new Date(Date.now() + this.serverTimeOffset);
+    }
+
+    /**
+     * Check if time sync is stale and needs refresh
+     * @returns {boolean} Whether sync is out of date
+     */
+    isOutOfSync() {
+        if (this.fallbackMode) return false;
+        return (Date.now() - this.lastSyncTime) > this.syncInterval * 2;
+    }
+}
+
+// Global time synchronization instance
+const timeSync = new TimeSync();
+
+/* ==============================================
+   TIMESTAMP FORMATTING SYSTEM
+   ============================================== */
+
+/**
+ * Format timestamp for display with intelligent relative time
+ * @param {string|Date} timestamp - Input timestamp
+ * @returns {string} Formatted time string
+ */
+function formatTimeIST(timestamp) {
+    if (!timestamp) return 'Just now';
+    
+    let messageDate;
+    
+    // Robust timestamp parsing with timezone handling
+    try {
+        if (typeof timestamp === 'string') {
+            // Handle both timezone-aware and naive timestamps
+            if (timestamp.includes('+') || timestamp.includes('Z')) {
+                messageDate = new Date(timestamp);
+            } else {
+                // Assume IST for naive timestamps from database
+                messageDate = new Date(timestamp + '+05:30');
+            }
+        } else {
+            messageDate = new Date(timestamp);
+        }
+        
+        if (isNaN(messageDate.getTime())) {
+            throw new Error('Invalid date');
+        }
+        
+    } catch (error) {
+        return 'Invalid time';
+    }
+    
+    // Use synchronized server time for consistent calculations
+    const now = timeSync.isInitialized && !timeSync.fallbackMode 
+        ? timeSync.getServerTime() 
+        : new Date();
+    
+    // Calculate time differences
+    const diffMs = now.getTime() - messageDate.getTime();
+    const diffMinutes = Math.floor(Math.abs(diffMs) / (1000 * 60));
+    const diffHours = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60));
+    const diffDays = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+    
+    // Handle future timestamps gracefully (sync issues)
+    if (diffMs < -60000) { // More than 1 minute in future
+        if (diffMinutes < 5) {
+            return 'Just now'; // Small future difference treated as "now"
+        } else {
+            return `${diffMinutes}m ahead (sync issue)`;
+        }
+    }
+    
+    // Format relative timestamps for better user experience
+    if (diffMinutes < 1) {
+        return 'Just now';
+    }
+    
+    if (diffHours < 1) {
+        return `${diffMinutes}m ago`;
+    }
+    
+    if (diffHours < 24) {
+        return `${diffHours}h ago`;
+    }
+    
+    // Yesterday special handling
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (messageDate.toDateString() === yesterday.toDateString()) {
+        return `Yesterday ${messageDate.toLocaleTimeString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        })}`;
+    }
+    
+    // This week handling
+    if (diffDays < 7) {
+        return messageDate.toLocaleDateString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            weekday: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+    
+    // Older dates with full formatting
+    return messageDate.toLocaleDateString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+}
+
+/* ==============================================
+   TIMESTAMP UPDATE SYSTEM
+   ============================================== */
+
+/**
+ * Update all visible timestamps efficiently
+ * Only updates changed timestamps to minimize DOM manipulation
+ */
+function updateAllTimestamps() {
+    // Skip updates when tab is hidden for performance
+    if (document.visibilityState === 'hidden') return;
+    
+    // Check if time sync needs refresh (fallback mode skips this)
+    if (!timeSync.fallbackMode && timeSync.isOutOfSync()) {
+        timeSync.syncWithServer();
+    }
+    
+    const messageHeaders = document.querySelectorAll('.message-header[data-created-at]');
+    let updatedCount = 0;
+    
+    messageHeaders.forEach(header => {
+        const createdAt = header.getAttribute('data-created-at');
+        const timeSpan = header.querySelector('span:last-child');
+        
+        if (!createdAt || !timeSpan) return;
+        
+        const previousText = timeSpan.textContent;
+        const newText = formatTimeIST(createdAt);
+        
+        // Only update DOM if text actually changed
+        if (previousText !== newText) {
+            timeSpan.textContent = newText;
+            updatedCount++;
+        }
+    });
+}
+
+/**
+ * Initialize timestamp update system
+ * Updates every 30 seconds for responsive user experience
+ */
+function startTimestampUpdates() {
+    if (window.timestampUpdateInterval) {
+        clearInterval(window.timestampUpdateInterval);
+    }
+    
+    // 30-second intervals for better responsiveness
+    window.timestampUpdateInterval = setInterval(updateAllTimestamps, 30000);
+    
+    // Initial update
+    updateAllTimestamps();
+}
+
+// Optimize updates based on tab visibility
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        updateAllTimestamps(); // Immediate update when tab becomes visible
+    }
+});
+
+/* ==============================================
+   APPLICATION INITIALIZATION
+   ============================================== */
+
+/**
+ * Initialize the complete application system
+ * Sets up authentication, time sync, messaging, and UI
+ */
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialize time synchronization first for accurate timestamps
+    await timeSync.initialize();
+    
+    // Initialize core application components
+    checkAuth();
+    setupEventListeners();
+    initializeRealtimeMessaging();
+    startTimestampUpdates();
+});
+
+/**
+ * Set up event listeners for user interactions
+ */
+function setupEventListeners() {
+    // Auto-resize message input textarea
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            handleTyping(); // Trigger typing indicator
+        });
+    }
+
+    // Auto-uppercase group codes for consistency
+    const groupCodeInput = document.getElementById('groupCode');
+    if (groupCodeInput) {
+        groupCodeInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    }
+}
+
+/* ==============================================
+   REAL-TIME MESSAGING SYSTEM
+   ============================================== */
+
+/**
+ * Initialize Socket.IO real-time messaging
+ * Handles connection, room management, and event handlers
+ */
+function initializeRealtimeMessaging() {
+    if (!window.io) {
+        return;
+    }
+    
+    // Use existing socket connection or create new one
+    groupSocket = window.socket || io();
+    window.socket = groupSocket;
+    
+    setupSocketEventHandlers();
+}
+
+/**
+ * Configure Socket.IO event handlers for real-time features
+ */
+function setupSocketEventHandlers() {
+    if (!groupSocket) return;
+    
+    // Group room management events
+    groupSocket.on('group-room-joined', function(data) {
+        currentGroupRoom = data.room;
+    });
+    
+    groupSocket.on('user-joined-group', function(data) {
+        onlineUsers.add(data.user_id);
+        showNotification(`${data.full_name} is now online`, 'info');
+        updateMembersOnlineStatus();
+    });
+    
+    groupSocket.on('user-left-group', function(data) {
+        onlineUsers.delete(data.user_id);
+        updateMembersOnlineStatus();
+    });
+    
+    // Real-time message events
+    groupSocket.on('new-group-message', function(data) {
+        if (currentThread && data.thread_id === currentThread.id) {
+            appendMessageToUI(data.message);
+            scrollMessagesToBottom();
+        }
+        
+        updateThreadMessageCount(data.thread_id);
+        
+        // Play notification for messages from other users
+        if (data.message.user_id !== (currentUser.user?.id || currentUser.user_id)) {
+            playNotificationSound();
+        }
+    });
+    
+    groupSocket.on('message-sent-confirm', function(data) {
+        removeAILoadingMessage();
+    });
+    
+    // File sharing events
+    groupSocket.on('new-group-file', function(data) {
+        if (currentThread && data.thread_id === currentThread.id) {
+            const fileMessage = {
+                id: Date.now(),
+                user_id: data.file.uploaded_by,
+                username: data.file.uploader_name,
+                full_name: data.file.uploader_name,
+                message: `📎 Shared a file: ${data.file.original_filename}`,
+                message_type: 'file',
+                shared_file: data.file,
+                created_at: data.file.uploaded_at,
+                is_gpt_query: false,
+                gpt_response: null
+            };
+            
+            appendMessageToUI(fileMessage);
+            scrollMessagesToBottom();
+            showNotification(`New file shared: ${data.file.original_filename}`, 'info');
+        }
+    });
+    
+    // Typing indicator events
+    groupSocket.on('user-typing', function(data) {
+        if (currentThread && data.thread_id === currentThread.id) {
+            showTypingIndicator(data.username, data.is_typing);
+        }
+    });
+    
+    // Error handling
+    groupSocket.on('error', function(data) {
+        showToast('error', 'Error', data.message);
+    });
+    
+    // Connection management
+    groupSocket.on('connect', function() {
+        // Rejoin current group room on reconnection
+        if (currentGroup) {
+            joinGroupRoom(currentGroup.id);
+        }
+    });
+    
+    groupSocket.on('disconnect', function() {
+        currentGroupRoom = null;
+    });
+}
+
+/**
+ * Join a group room for real-time messaging
+ * @param {number} groupId - Group ID to join
+ */
+function joinGroupRoom(groupId) {
+    if (!groupSocket || !groupId) return;
+    
+    // Leave current room before joining new one
+    if (currentGroupRoom) {
+        groupSocket.emit('leave-group-room', { group_id: currentGroup.id });
+    }
+    
+    // Join new group room
+    groupSocket.emit('join-group-room', { group_id: groupId });
+}
+
+/**
+ * Leave current group room
+ */
+function leaveGroupRoom() {
+    if (!groupSocket || !currentGroup) return;
+    
+    groupSocket.emit('leave-group-room', { group_id: currentGroup.id });
+    currentGroupRoom = null;
+}
+
+/* ==============================================
+   TYPING INDICATOR SYSTEM
+   ============================================== */
+
+/**
+ * Handle user typing events
+ * Sends typing status to other group members
+ */
+function handleTyping() {
+    if (!groupSocket || !currentThread) return;
+    
+    if (!isTyping) {
+        isTyping = true;
+        groupSocket.emit('typing-in-group', {
+            group_id: currentGroup.id,
+            thread_id: currentThread.id,
+            is_typing: true
+        });
+    }
+    
+    // Auto-stop typing after 2 seconds of inactivity
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(handleTypingStop, 2000);
+}
+
+/**
+ * Stop typing indicator
+ */
+function handleTypingStop() {
+    if (!groupSocket || !currentThread || !isTyping) return;
+    
+    isTyping = false;
+    groupSocket.emit('typing-in-group', {
+        group_id: currentGroup.id,
+        thread_id: currentThread.id,
+        is_typing: false
+    });
+}
+
+/**
+ * Display typing indicator for other users
+ * @param {string} username - Name of typing user
+ * @param {boolean} isTyping - Typing status
+ */
+function showTypingIndicator(username, isTyping) {
+    const container = document.getElementById('messagesContainer');
+    const typingId = `typing-${username.replace(/[^a-zA-Z0-9]/g, '')}`;
+    let typingIndicator = document.getElementById(typingId);
+    
+    if (isTyping && !typingIndicator) {
+        typingIndicator = document.createElement('div');
+        typingIndicator.id = typingId;
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = `
+            <div class="typing-content">
+                <span>${escapeHtml(username)} is typing</span>
+                <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        `;
+        container.appendChild(typingIndicator);
+        scrollMessagesToBottom();
+    } else if (!isTyping && typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+/* ==============================================
+   MESSAGE DISPLAY SYSTEM
+   ============================================== */
+
+/**
+ * Append new message to UI efficiently
+ * @param {Object} message - Message object from server
+ */
+function appendMessageToUI(message) {
+    const container = document.getElementById('messagesContainer');
+    const messageElement = createMessageElement(message);
+    
+    // Remove empty state if present
+    const emptyState = container.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+    
+    container.appendChild(messageElement);
+}
+
+/**
+ * Create message DOM element with proper styling and data
+ * @param {Object} message - Message object
+ * @returns {HTMLElement} Message DOM element
+ */
+function createMessageElement(message) {
+    const isOwn = message.user_id === (currentUser.user?.id || currentUser.user_id);
+    const isGPT = message.is_gpt_query;
+    const isFile = message.message_type === 'file';
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isOwn ? 'own' : 'other'} ${isGPT ? 'gpt' : ''} ${isFile ? 'file' : ''}`;
+    messageDiv.setAttribute('data-message-id', message.id);
+    
+    // Use backend timestamp directly for accuracy
+    const backendTimestamp = message.created_at;
+    
+    let messageContent = `
+        <div class="message-header" data-created-at="${backendTimestamp}">
+            <strong>${escapeHtml(message.full_name)}</strong>
+            ${isGPT ? '<span class="gpt-indicator"><i class="fas fa-robot"></i> GPT Query</span>' : ''}
+            ${isFile ? '<span class="file-indicator"><i class="fas fa-paperclip"></i> File</span>' : ''}
+            <span style="margin-left: 0.5rem;">${formatTimeIST(backendTimestamp)}</span>
+        </div>
+        <div class="message-content">
+            ${escapeHtml(message.message)}
+        </div>
+    `;
+    
+    // Add file attachment preview if present
+    if (message.shared_file) {
+        messageContent += renderFileAttachment(message.shared_file);
+    }
+    
+    // Add GPT response with markdown formatting
+    if (message.gpt_response) {
+        messageContent += `
+            <div class="gpt-response">
+                <strong><i class="fas fa-robot"></i> Sana's Response:</strong><br>
+                ${parseMarkdown(message.gpt_response)}
+            </div>
+        `;
+    }
+    
+    messageDiv.innerHTML = messageContent;
+    return messageDiv;
+}
+
+/**
+ * Update thread UI to show new message indicator
+ * @param {number} threadId - Thread that received new message
+ */
+function updateThreadMessageCount(threadId) {
+    const threadElements = document.querySelectorAll('.thread-item');
+    threadElements.forEach(element => {
+        if (element.onclick && element.onclick.toString().includes(threadId)) {
+            element.classList.add('has-new-messages');
+        }
+    });
+}
+
+/**
+ * Play subtle notification sound for new messages
+ */
+function playNotificationSound() {
+    try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+H2u2seBC2Sz/LNeSsF');
+        audio.volume = 0.1;
+        audio.play().catch(() => {}); // Ignore errors for better compatibility
+    } catch (error) {
+        // Ignore audio errors
+    }
+}
+
+/**
+ * Update member online status indicators
+ */
+function updateMembersOnlineStatus() {
+    const memberItems = document.querySelectorAll('.member-item');
+    memberItems.forEach(item => {
+        const memberInfo = item.querySelector('.member-info');
+        if (memberInfo && onlineUsers.has(parseInt(memberInfo.dataset.userId))) {
+            item.classList.add('member-online');
+        } else {
+            item.classList.remove('member-online');
+        }
+    });
+}
+
+/**
+ * Scroll messages container to bottom smoothly
+ */
+function scrollMessagesToBottom() {
+    const container = document.getElementById('messagesContainer');
+    setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+    }, 100);
+}
+
+/**
+ * Show notification to user
+ * @param {string} message - Notification message
+ * @param {string} type - Notification type (info, success, error)
+ */
+function showNotification(message, type) {
+    showToast(type, 'Group Update', message, 3000);
+}
+
+/* ==============================================
+   MARKDOWN PARSING FOR GPT RESPONSES
+   ============================================== */
+
+/**
+ * Parse markdown text to HTML for GPT responses
+ * @param {string} text - Markdown text
+ * @returns {string} HTML formatted text
+ */
+function parseMarkdown(text) {
+    if (!text) return '';
+    
+    // Escape HTML to prevent XSS attacks
+    let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+
+    // Parse markdown syntax to HTML
+    html = html
+        // Headers
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        
+        // Code blocks
+        .replace(/``````/g, '<pre><code>$1</code></pre>')
+        
+        // Inline code
+        .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+        
+        // Bold text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        
+        // Italic text
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        
+        // Links
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+        
+        // Lists
+        .replace(/^\s*[-*+]\s+(.*$)/gm, '<li>$1</li>')
+        .replace(/^\s*\d+\.\s+(.*$)/gm, '<li>$1</li>')
+        
+        // Blockquotes
+        .replace(/^>\s+(.*$)/gm, '<blockquote>$1</blockquote>')
+        
+        // Horizontal rules
+        .replace(/^---+$/gm, '<hr>')
+        
+        // Line breaks
+        .replace(/\n\s*\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+
+    // Group list items into proper lists
+    html = html.replace(/(<li>.*?<\/li>)(?:\s*<li>.*?<\/li>)*/g, function(match) {
+        return '<ul>' + match + '</ul>';
+    });
+
+    // Wrap in paragraphs if needed
+    if (!html.includes('<p>') && !html.includes('<h1>') && !html.includes('<h2>') && 
+        !html.includes('<h3>') && !html.includes('<ul>') && !html.includes('<ol>') && 
+        !html.includes('<pre>')) {
+        html = '<p>' + html + '</p>';
+    }
+
+    return html;
+}
+
+/* ==============================================
+   TOAST NOTIFICATION SYSTEM
+   ============================================== */
+
+/**
+ * Show toast notification with auto-dismiss
+ * @param {string} type - Toast type (success, error, info, warning)
+ * @param {string} title - Toast title
+ * @param {string} message - Toast message
+ * @param {number} duration - Auto-dismiss duration in ms
+ */
+function showToast(type, title, message, duration = 5000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        info: 'fas fa-info-circle',
+        warning: 'fas fa-exclamation-triangle'
+    };
+
+    toast.innerHTML = `
+        <div class="toast-header">
+            <span><i class="${icons[type] || icons.info}"></i> ${title}</span>
+            <button class="toast-close" onclick="closeToast(this)">&times;</button>
+        </div>
+        <div class="toast-body">${message}</div>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto-dismiss after specified duration
+    setTimeout(() => {
+        if (toast.parentNode) {
+            closeToast(toast.querySelector('.toast-close'));
+        }
+    }, duration);
+}
+
+/**
+ * Close toast notification
+ * @param {HTMLElement} button - Close button element
+ */
+function closeToast(button) {
+    const toast = button.closest('.toast');
+    if (toast) {
+        toast.style.animation = 'toastSlideOut 0.3s ease-out forwards';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 300);
+    }
+}
+
+/* ==============================================
+   AI LOADING SYSTEM
+   ============================================== */
+
+/**
+ * Show AI loading indicator for GPT queries
+ * @returns {string} Loading message ID
+ */
+function showAILoadingMessage() {
+    const container = document.getElementById('messagesContainer');
+    if (!container) return null;
+
+    removeAILoadingMessage();
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'ai-loading-message';
+    loadingDiv.id = 'aiLoadingMessage';
+    
+    // Use server-synchronized time for accuracy
+    const currentTime = timeSync.isInitialized ? timeSync.getServerTime().toISOString() : new Date().toISOString();
+    
+    loadingDiv.innerHTML = `
+        <div class="message-header" data-created-at="${currentTime}">
+            <strong>Sana AI</strong>
+            <span style="margin-left: 0.5rem;">${formatTimeIST(currentTime)}</span>
+        </div>
+        <div class="ai-loading-content">
+            <div class="ai-loading-spinner"></div>
+            <span>Sana is thinking...</span>
+        </div>
+    `;
+
+    container.appendChild(loadingDiv);
+    scrollMessagesToBottom();
+    
+    return loadingDiv.id;
+}
+
+/**
+ * Remove AI loading indicator
+ */
+function removeAILoadingMessage() {
+    const loadingMsg = document.getElementById('aiLoadingMessage');
+    if (loadingMsg) {
+        loadingMsg.remove();
+    }
+    aiLoadingMessageId = null;
+}
+
+/* ==============================================
+   FILE HANDLING SYSTEM
+   ============================================== */
+
+/**
+ * Handle file selection for upload
+ * @param {Event} event - File input change event
+ */
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file size (50MB limit for group sharing)
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+        showToast('error', 'File Too Large', 'File too large. Maximum size is 50MB for group sharing.');
+        event.target.value = '';
+        return;
+    }
+
+    selectedFile = file;
+    showFileConfirmation(file);
+}
+
+/**
+ * Show file upload confirmation dialog
+ * @param {File} file - Selected file object
+ */
+function showFileConfirmation(file) {
+    const modal = document.getElementById('fileConfirmModal');
+    const info = document.getElementById('fileConfirmInfo');
+    
+    const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+    info.innerHTML = `
+        <div style="background: rgba(135, 206, 235, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                <i class="fas fa-file"></i> ${file.name}
+            </div>
+            <div style="font-size: 0.9rem;">
+                Size: ${fileSize} MB | Type: ${file.type || 'Unknown'}
+            </div>
+        </div>
+        <p>Do you want to share this file with the group?</p>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+/**
+ * Confirm file upload
+ */
+function confirmFileUpload() {
+    document.getElementById('fileConfirmModal').style.display = 'none';
+    uploadFile();
+}
+
+/**
+ * Cancel file upload
+ */
+function cancelFileUpload() {
+    document.getElementById('fileConfirmModal').style.display = 'none';
+    selectedFile = null;
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.value = '';
+    }
+}
+
+/**
+ * Upload selected file with progress indication
+ */
+async function uploadFile() {
+    if (!selectedFile || !currentGroup) return;
+
+    try {
+        const progressElement = document.getElementById('fileUploadProgress');
+        const progressFill = document.getElementById('uploadProgressFill');
+        
+        if (progressElement) progressElement.style.display = 'block';
+        if (progressFill) progressFill.style.width = '0%';
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        if (currentThread) {
+            formData.append('thread_id', currentThread.id);
+        }
+
+        // Simulate upload progress for better UX
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += 10;
+            if (progressFill) progressFill.style.width = `${Math.min(progress, 90)}%`;
+        }, 100);
+
+        const response = await fetch(`/api/groups/${currentGroup.id}/files/upload`, {
+            method: 'POST',
+            body: formData
+        });
+
+        clearInterval(progressInterval);
+        if (progressFill) progressFill.style.width = '100%';
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'File uploaded successfully!');
+            selectedFile = null;
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) fileInput.value = '';
+            
+            // Notify other group members via Socket.IO
+            if (groupSocket) {
+                groupSocket.emit('group-file-uploaded', {
+                    group_id: currentGroup.id,
+                    file_id: data.file.id,
+                    thread_id: currentThread ? currentThread.id : null
+                });
+            }
+        } else {
+            showToast('error', 'Upload Failed', data.error || 'Failed to upload file');
+        }
+    } catch (error) {
+        showToast('error', 'Upload Failed', 'Failed to upload file');
+    } finally {
+        setTimeout(() => {
+            const progressElement = document.getElementById('fileUploadProgress');
+            if (progressElement) progressElement.style.display = 'none';
+        }, 1000);
+    }
+}
+
+/**
+ * Render file attachment with appropriate preview
+ * @param {Object} file - File object from server
+ * @returns {string} HTML for file attachment
+ */
+function renderFileAttachment(file) {
+    const fileUrl = `/api/groups/${currentGroup.id}/files/${file.id}/download`;
+    let preview = '';
+    
+    // Generate preview based on file type
+    if (file.is_image) {
+        preview = `
+            <div class="file-preview-container">
+                <img src="${fileUrl}" 
+                     class="file-preview" 
+                     alt="${escapeHtml(file.original_filename)}"
+                     onclick="showImageOverlay('${fileUrl}', '${escapeHtml(file.original_filename)}')"
+                     style="display: block;">
+            </div>
+        `;
+    } else if (file.file_type === 'application/pdf' || file.original_filename.toLowerCase().endsWith('.pdf')) {
+        preview = `
+            <div class="file-preview-container">
+                <div class="pdf-fallback">
+                    <div style="margin-bottom: 1rem;">
+                        <i class="fas fa-file-pdf" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">PDF Document</div>
+                        <div style="font-size: 0.9rem; color: #666;">${escapeHtml(file.original_filename)}</div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <button onclick="openPDFInNewTab('${fileUrl}')" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                            <i class="fas fa-external-link-alt"></i> Open PDF
+                        </button>
+                        <button onclick="downloadFile(${file.id})" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (isTextFile(file)) {
+        preview = `
+            <div class="file-preview-container">
+                <div class="file-loading">Loading document preview...</div>
+            </div>
+        `;
+        setTimeout(() => loadTextPreview(file.id, fileUrl), 100);
+    } else if (file.file_type?.startsWith('video/')) {
+        preview = `
+            <div class="file-preview-container">
+                <video class="video-preview" controls preload="metadata">
+                    <source src="${fileUrl}" type="${file.file_type}">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        `;
+    } else if (file.file_type?.startsWith('audio/')) {
+        preview = `
+            <div class="file-preview-container">
+                <audio class="audio-preview" controls preload="metadata">
+                    <source src="${fileUrl}" type="${file.file_type}">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+        `;
+    } else {
+        preview = `
+            <div class="file-preview-container">
+                <div style="text-align: center; padding: 1.5rem; color: #666;">
+                    <i class="fas fa-file" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <div>Preview not available for this file type</div>
+                    <div style="font-size: 0.8rem; margin-top: 0.5rem;">Click download to view the file</div>
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="file-attachment">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <div class="file-icon" style="font-size: 2rem; color: #4682B4; margin-top: 0.5rem;">
+                    ${getFileIcon(file.file_type)}
+                </div>
+                <div class="file-info" style="flex: 1;">
+                    <div class="file-name" style="font-weight: 700; color: #2c3e50; margin-bottom: 0.3rem;">
+                        ${escapeHtml(file.original_filename)}
+                    </div>
+                    <div class="file-meta" style="font-size: 0.8rem; color: #5a6c7d; margin-bottom: 1rem;">
+                        ${file.file_size_formatted} • Downloaded ${file.download_count} times
+                    </div>
+                    <div class="file-actions" style="display: flex; gap: 0.5rem;">
+                        <button onclick="downloadFile(${file.id})" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        ${file.is_image ? `
+                            <button onclick="showImageOverlay('${fileUrl}', '${escapeHtml(file.original_filename)}')" 
+                                    class="btn btn-info" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                <i class="fas fa-expand"></i> View Full
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+            ${preview}
+        </div>
+    `;
+}
+
+/* ==============================================
+   FILE UTILITY FUNCTIONS
+   ============================================== */
+
+/**
+ * Check if file is a text file for preview
+ * @param {Object} file - File object
+ * @returns {boolean} Whether file is text-based
+ */
+function isTextFile(file) {
+    const textTypes = [
+        'text/', 
+        'application/json', 
+        'application/xml', 
+        'application/javascript',
+        'application/css'
+    ];
+    
+    const textExtensions = [
+        '.txt', '.md', '.csv', '.log', '.json', '.xml', '.html', '.css', 
+        '.js', '.py', '.java', '.cpp', '.c', '.h', '.php', '.sql'
+    ];
+    
+    return textTypes.some(type => file.file_type?.startsWith(type)) ||
+           textExtensions.some(ext => file.original_filename.toLowerCase().endsWith(ext));
+}
+
+/**
+ * Load text file preview asynchronously
+ * @param {number} fileId - File ID
+ * @param {string} fileUrl - File download URL
+ */
+async function loadTextPreview(fileId, fileUrl) {
+    try {
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('Failed to load file');
+        
+        const text = await response.text();
+        const preview = text.substring(0, 2000); // Limit to first 2000 characters
+        const truncated = text.length > 2000;
+        
+        // Find and update the preview container
+        const containers = document.querySelectorAll('.file-preview-container');
+        containers.forEach(container => {
+            if (container.innerHTML.includes('Loading document preview')) {
+                container.innerHTML = `
+                    <div class="document-preview">
+                        ${escapeHtml(preview)}
+                        ${truncated ? '\n\n... (truncated - download full file to see more)' : ''}
+                    </div>
+                `;
+            }
+        });
+    } catch (error) {
+        const containers = document.querySelectorAll('.file-preview-container');
+        containers.forEach(container => {
+            if (container.innerHTML.includes('Loading document preview')) {
+                container.innerHTML = `
+                    <div class="file-error">
+                        Failed to load document preview. Click download to view the file.
+                    </div>
+                `;
+            }
+        });
+    }
+}
+
+/**
+ * Open PDF in new browser tab
+ * @param {string} pdfUrl - PDF file URL
+ */
+function openPDFInNewTab(pdfUrl) {
+    window.open(pdfUrl, '_blank');
+}
+
+/**
+ * Show image in fullscreen overlay
+ * @param {string} imageUrl - Image URL
+ * @param {string} filename - Image filename
+ */
+function showImageOverlay(imageUrl, filename) {
+    const overlay = document.createElement('div');
+    overlay.className = 'preview-overlay';
+    overlay.style.display = 'flex';
+    
+    overlay.innerHTML = `
+        <button class="preview-close" onclick="closeImageOverlay(this)">&times;</button>
+        <img src="${imageUrl}" alt="${filename}" style="object-fit: contain;">
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Close on click outside or ESC key
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeImageOverlay(overlay.querySelector('.preview-close'));
+        }
+    });
+    
+    document.addEventListener('keydown', function escKeyHandler(e) {
+        if (e.key === 'Escape') {
+            closeImageOverlay(overlay.querySelector('.preview-close'));
+            document.removeEventListener('keydown', escKeyHandler);
+        }
+    });
+}
+
+/**
+ * Close image fullscreen overlay
+ * @param {HTMLElement} button - Close button element
+ */
+function closeImageOverlay(button) {
+    const overlay = button.closest('.preview-overlay');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.3s ease-out forwards';
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        }, 300);
+    }
+}
+
+/**
+ * Get appropriate icon for file type
+ * @param {string} fileType - MIME type of file
+ * @returns {string} Font Awesome icon HTML
+ */
+function getFileIcon(fileType) {
+    const icons = {
+        'image': '<i class="fas fa-image"></i>',
+        'video': '<i class="fas fa-video"></i>',
+        'audio': '<i class="fas fa-music"></i>',
+        'document': '<i class="fas fa-file-alt"></i>',
+        'other': '<i class="fas fa-paperclip"></i>'
+    };
+    
+    if (fileType?.startsWith('image/')) return icons['image'];
+    if (fileType?.startsWith('video/')) return icons['video'];
+    if (fileType?.startsWith('audio/')) return icons['audio'];
+    if (fileType === 'application/pdf') return '<i class="fas fa-file-pdf"></i>';
+    if (fileType?.includes('document') || fileType?.includes('word')) return '<i class="fas fa-file-word"></i>';
+    if (fileType?.includes('spreadsheet') || fileType?.includes('excel')) return '<i class="fas fa-file-excel"></i>';
+    if (fileType?.includes('presentation') || fileType?.includes('powerpoint')) return '<i class="fas fa-file-powerpoint"></i>';
+    
+    return icons['other'];
+}
+
+/**
+ * Download file with proper filename handling
+ * @param {number} fileId - File ID to download
+ */
+async function downloadFile(fileId) {
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/files/${fileId}/download`);
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = response.headers.get('Content-Disposition')?.split('filename=')[1] || 'download';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } else {
+            showToast('error', 'Download Failed', 'Failed to download file');
+        }
+    } catch (error) {
+        showToast('error', 'Download Failed', 'Failed to download file');
+    }
+}
+
+/* ==============================================
+   AUTHENTICATION SYSTEM
+   ============================================== */
+
+/**
+ * Check user authentication status
+ */
+async function checkAuth() {
+    try {
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+        
+        if (data.authenticated) {
+            currentUser = data;
+            document.getElementById('userWelcome').textContent = 
+                `Welcome, ${data.username || data.user?.username}!`;
+            loadMyGroups();
+        } else {
+            window.location.href = '/';
+        }
+    } catch (error) {
+        window.location.href = '/';
+    }
+}
+
+/**
+ * Logout user and redirect to home
+ */
+async function logout() {
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        window.location.href = '/';
+    } catch (error) {
+        window.location.href = '/';
+    }
+}
+
+/* ==============================================
+   GROUP MANAGEMENT SYSTEM
+   ============================================== */
+
+/**
+ * Load user's study groups
+ */
+async function loadMyGroups() {
+    try {
+        const response = await fetch('/api/groups/my-groups');
+        const data = await response.json();
+        
+        if (data.success) {
+            groups = data.groups;
+            displayGroups();
+        } else {
+            showToast('error', 'Error', data.error || 'Failed to load groups');
+        }
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to load groups');
+    }
+}
+
+/**
+ * Display user's groups in sidebar
+ */
+function displayGroups() {
+    const groupsList = document.getElementById('groupsList');
+    
+    if (groups.length === 0) {
+        groupsList.innerHTML = `
+            <div class="empty-state">
+                <h3>No Groups Yet</h3>
+                <p>Create or join a group to start studying together!</p>
+            </div>
+        `;
+        return;
+    }
+
+    groupsList.innerHTML = groups.map(group => `
+        <div class="group-item ${currentGroup?.id === group.id ? 'active' : ''}" 
+             onclick="selectGroup(${group.id})">
+            <div class="group-name">${escapeHtml(group.name)}</div>
+            <div class="group-meta">
+                ${group.subject ? `<i class="fas fa-book"></i> ${escapeHtml(group.subject)} • ` : ''}
+                <i class="fas fa-users"></i> ${group.member_count}/${group.max_members} members
+                ${group.admin_id === (currentUser.user?.id || currentUser.user_id) ? ' • <i class="fas fa-crown"></i> Admin' : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * Select and load group data
+ * @param {number} groupId - Group ID to select
+ */
+async function selectGroup(groupId) {
+    try {
+        const group = groups.find(g => g.id === groupId);
+        if (!group) return;
+
+        // Leave current group room
+        if (currentGroup) {
+            leaveGroupRoom();
+        }
+        
+        const response = await fetch(`/api/groups/${groupId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            currentGroup = data.group;
+            currentThread = null;
+            
+            // Join new group room for real-time messaging
+            joinGroupRoom(groupId);
+            
+            // Update UI components
+            displayGroups();
+            showChatInterface();
+            displayThreads();
+            displayMembers();
+            
+        } else {
+            showToast('error', 'Error', data.error || 'Failed to load group details');
+        }
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to load group details');
+    }
+}
+
+/**
+ * Show chat interface when group is selected
+ */
+function showChatInterface() {
+    document.getElementById('chatWelcome').style.display = 'none';
+    document.getElementById('chatInterface').style.display = 'flex';
+    document.getElementById('chatTitle').textContent = currentGroup.name;
+    document.getElementById('chatSubtitle').textContent = 
+        `${currentGroup.member_count} members • ${currentGroup.subject || 'General Study'}`;
+}
+
+/**
+ * Display group threads
+ */
+function displayThreads() {
+    const threadsList = document.getElementById('threadsList');
+    const threads = currentGroup.threads || [];
+    
+    if (threads.length === 0) {
+        threadsList.innerHTML = `
+            <div class="thread-item">
+                <i class="fas fa-bullhorn"></i> No threads yet. Create the first one!
+            </div>
+        `;
+        return;
+    }
+
+    threadsList.innerHTML = threads.map(thread => `
+        <div class="thread-item ${currentThread?.id === thread.id ? 'active' : ''}" 
+             onclick="selectThread(${thread.id})">
+            ${thread.is_pinned ? '<i class="fas fa-thumbtack"></i> ' : ''}<i class="fas fa-comments"></i> ${escapeHtml(thread.title)}
+            <small style="display: block; opacity: 0.7;">
+                ${thread.message_count} messages
+            </small>
+        </div>
+    `).join('');
+}
+
+/**
+ * Display group members
+ */
+function displayMembers() {
+    const membersList = document.getElementById('membersList');
+    
+    if (!currentGroup || !currentGroup.members || currentGroup.members.length === 0) {
+        membersList.innerHTML = `
+            <div class="empty-state">
+                <h3>No Members</h3>
+                <p>No members found in this group</p>
+            </div>
+        `;
+        return;
+    }
+
+    const isAdmin = currentGroup.is_admin;
+    
+    membersList.innerHTML = currentGroup.members.map(member => `
+        <div class="member-item" data-user-id="${member.user_id}">
+            <div class="member-info" data-user-id="${member.user_id}">
+                <div class="member-name">${escapeHtml(member.full_name)}</div>
+                <div class="member-role">
+                    ${member.role === 'admin' ? '<i class="fas fa-crown"></i> Admin' : '<i class="fas fa-user"></i> Member'} • 
+                    @${escapeHtml(member.username)}
+                </div>
+            </div>
+            ${isAdmin && member.role !== 'admin' ? `
+                <button onclick="removeMember(${member.user_id})" class="btn btn-danger btn-sm">
+                    Remove
+                </button>
+            ` : ''}
+        </div>
+    `).join('');
+}
+
+/* ==============================================
+   THREAD MANAGEMENT SYSTEM
+   ============================================== */
+
+/**
+ * Select and load thread messages
+ * @param {number} threadId - Thread ID to select
+ */
+async function selectThread(threadId) {
+    if (!threadId) {
+        currentThread = null;
+        removeAILoadingMessage();
+        document.getElementById('messagesContainer').innerHTML = `
+            <div class="empty-state">
+                <h3>Select a Thread</h3>
+                <p>Choose a thread from above to start the conversation</p>
+            </div>
+        `;
+        document.getElementById('messageInputContainer').style.display = 'none';
+        displayThreads();
+        return;
+    }
+
+    try {
+        const thread = currentGroup.threads.find(t => t.id === threadId);
+        if (!thread) return;
+
+        currentThread = thread;
+        removeAILoadingMessage();
+        displayThreads();
+        
+        document.getElementById('messageInputContainer').style.display = 'flex';
+        await loadInitialMessages();
+        
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to load thread');
+    }
+}
+
+/**
+ * Load initial messages for selected thread
+ */
+async function loadInitialMessages() {
+    if (!currentThread) return;
+
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/threads/${currentThread.id}/messages`);
+        const data = await response.json();
+        
+        if (data.success) {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+            
+            if (data.messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Messages Yet</h3>
+                        <p>Start the conversation in this thread!</p>
+                    </div>
+                `;
+            } else {
+                // Backend sends DESC (newest first), reverse to get chronological order
+                data.messages.reverse().forEach(message => {
+                    appendMessageToUI(message);
+                });
+                scrollMessagesToBottom();
+            }
+        }
+    } catch (error) {
+        // Handle error silently for better UX
+    }
+}
+
+/**
+ * Send message via Socket.IO for real-time delivery
+ */
+async function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    
+    if (!message || !currentThread || !groupSocket) return;
+    
+    // Check for AI query and show loading indicator
+    const isAIQuery = message.toLowerCase().includes('@sana');
+    if (isAIQuery) {
+        showAILoadingMessage();
+    }
+    
+    // Clear input immediately for better UX
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Send via Socket.IO for real-time delivery
+    groupSocket.emit('send-group-message', {
+        group_id: currentGroup.id,
+        thread_id: currentThread.id,
+        message: message
+    });
+    
+    // Stop typing indicator
+    handleTypingStop();
+}
+
+/**
+ * Handle Enter key for message sending
+ * @param {KeyboardEvent} event - Keydown event
+ */
+function handleMessageKeydown(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+/* ==============================================
+   FILES MODAL SYSTEM
+   ============================================== */
+
+/**
+ * Show files management modal
+ */
+async function showFilesModal() {
+    if (!currentGroup) {
+        showToast('error', 'Error', 'Please select a group first');
+        return;
+    }
+    
+    document.getElementById('filesModal').style.display = 'block';
+    await loadGroupFiles();
+}
+
+/**
+ * Load and display group files
+ * @param {string} fileType - Optional file type filter
+ */
+async function loadGroupFiles(fileType = null) {
+    try {
+        let url = `/api/groups/${currentGroup.id}/files`;
+        if (fileType && fileType !== 'all') {
+            url += `?type=${fileType}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.success) {
+            displayGroupFiles(data.files);
+        } else {
+            showToast('error', 'Error', data.error || 'Failed to load files');
+        }
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to load files');
+    }
+}
+
+/**
+ * Display files in modal
+ * @param {Array} files - Array of file objects
+ */
+function displayGroupFiles(files) {
+    const container = document.getElementById('filesContent');
+    
+    if (files.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No Files Shared</h3>
+                <p>No files have been shared in this group yet.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = files.map(file => `
+        <div class="file-attachment" style="margin-bottom: 1rem;">
+            <div class="file-icon">
+                ${getFileIcon(file.file_type)}
+            </div>
+            <div class="file-info">
+                <div class="file-name">${escapeHtml(file.original_filename)}</div>
+                <div class="file-meta">
+                    ${file.file_size_formatted} • Shared by ${escapeHtml(file.uploader_name)} • 
+                    ${formatDateIST(file.uploaded_at)} • Downloaded ${file.download_count} times
+                </div>
+                ${file.description ? `<div style="margin-top: 0.5rem; font-style: italic;">${escapeHtml(file.description)}</div>` : ''}
+            </div>
+            <div class="file-actions">
+                <button onclick="downloadFile(${file.id})" class="btn btn-primary btn-sm">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * Filter files by type
+ * @param {string} type - File type to filter by
+ */
+function filterFiles(type) {
+    loadGroupFiles(type);
+}
+
+/* ==============================================
+   MODAL MANAGEMENT SYSTEM
+   ============================================== */
+
+/**
+ * Show create group modal
+ */
+function showCreateGroupModal() {
+    document.getElementById('createGroupModal').style.display = 'block';
+}
+
+/**
+ * Show join group modal
+ */
+function showJoinGroupModal() {
+    document.getElementById('joinGroupModal').style.display = 'block';
+}
+
+/**
+ * Show create thread modal
+ */
+function showCreateThreadModal() {
+    if (!currentGroup) {
+        showToast('error', 'Error', 'Please select a group first');
+        return;
+    }
+    document.getElementById('createThreadModal').style.display = 'block';
+}
+
+/**
+ * Show group information modal
+ */
+function showGroupInfo() {
+    if (!currentGroup) return;
+    
+    const content = document.getElementById('groupInfoContent');
+    const isAdmin = currentGroup.is_admin;
+    
+    content.innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+            <h3>${escapeHtml(currentGroup.name)}</h3>
+            ${currentGroup.description ? `<p style="color: #666; margin-top: 0.5rem;">${escapeHtml(currentGroup.description)}</p>` : ''}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <strong>Group Code:</strong><br>
+                <code style="background: #f8f9fa; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 1.1rem;">
+                    ${currentGroup.group_code}
+                </code>
+            </div>
+            <div>
+                <strong>Subject:</strong><br>
+                ${currentGroup.subject || 'General Study'}
+            </div>
+            <div>
+                <strong>Members:</strong><br>
+                ${currentGroup.member_count}/${currentGroup.max_members}
+            </div>
+            <div>
+                <strong>Created:</strong><br>
+                ${formatDateIST(currentGroup.created_at)}
+            </div>
+        </div>
+        
+        ${isAdmin ? `
+            <div class="alert alert-info">
+                <strong><i class="fas fa-crown"></i> Admin Controls:</strong> You can manage this group's members and settings.
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button onclick="leaveGroup()" class="btn btn-warning">Leave Group</button>
+                <button onclick="deleteGroup()" class="btn btn-danger">Delete Group</button>
+            </div>
+        ` : `
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button onclick="leaveGroup()" class="btn btn-warning">Leave Group</button>
+            </div>
+        `}
+    `;
+    
+    document.getElementById('groupInfoModal').style.display = 'block';
+}
+
+/**
+ * Close modal dialog
+ * @param {string} modalId - Modal ID to close
+ */
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    
+    // Clear form inputs
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const inputs = modal.querySelectorAll('input, textarea');
+        inputs.forEach(input => input.value = '');
+    }
+}
+
+/* ==============================================
+   CRUD OPERATIONS
+   ============================================== */
+
+/**
+ * Create new study group
+ * @param {Event} event - Form submit event
+ */
+async function createGroup(event) {
+    event.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('groupName').value.trim(),
+        description: document.getElementById('groupDescription').value.trim(),
+        subject: document.getElementById('groupSubject').value.trim(),
+        max_members: parseInt(document.getElementById('maxMembers').value)
+    };
+
+    try {
+        const response = await fetch('/api/groups/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Group created successfully!');
+            closeModal('createGroupModal');
+            await loadMyGroups();
+        } else {
+            showToast('error', 'Creation Failed', data.error || 'Failed to create group');
+        }
+    } catch (error) {
+        showToast('error', 'Creation Failed', 'Failed to create group');
+    }
+}
+
+/**
+ * Join existing study group
+ * @param {Event} event - Form submit event
+ */
+async function joinGroup(event) {
+    event.preventDefault();
+    
+    const groupCode = document.getElementById('groupCode').value.trim().toUpperCase();
+
+    try {
+        const response = await fetch('/api/groups/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ group_code: groupCode })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Joined group successfully!');
+            closeModal('joinGroupModal');
+            await loadMyGroups();
+        } else {
+            showToast('error', 'Join Failed', data.error || 'Failed to join group');
+        }
+    } catch (error) {
+        showToast('error', 'Join Failed', 'Failed to join group');
+    }
+}
+
+/**
+ * Create new discussion thread
+ * @param {Event} event - Form submit event
+ */
+async function createThread(event) {
+    event.preventDefault();
+    
+    const formData = {
+        title: document.getElementById('threadTitle').value.trim(),
+        description: document.getElementById('threadDescription').value.trim()
+    };
+
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/threads/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Thread created successfully!');
+            closeModal('createThreadModal');
+            await selectGroup(currentGroup.id);
+        } else {
+            showToast('error', 'Creation Failed', data.error || 'Failed to create thread');
+        }
+    } catch (error) {
+        showToast('error', 'Creation Failed', 'Failed to create thread');
+    }
+}
+
+/**
+ * Leave current study group
+ */
+async function leaveGroup() {
+    if (!confirm('Are you sure you want to leave this group?')) return;
+
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/leave`, {
+            method: 'POST'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Left group successfully');
+            closeModal('groupInfoModal');
+            currentGroup = null;
+            currentThread = null;
+            document.getElementById('chatWelcome').style.display = 'flex';
+            document.getElementById('chatInterface').style.display = 'none';
+            await loadMyGroups();
+        } else {
+            showToast('error', 'Leave Failed', data.error || 'Failed to leave group');
+        }
+    } catch (error) {
+        showToast('error', 'Leave Failed', 'Failed to leave group');
+    }
+}
+
+/**
+ * Delete study group (admin only)
+ */
+async function deleteGroup() {
+    if (!confirm('Are you sure you want to DELETE this group? This action CANNOT be undone and will remove ALL messages, files, and threads!')) return;
+
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/delete`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Group deleted successfully');
+            closeModal('groupInfoModal');
+            currentGroup = null;
+            currentThread = null;
+            document.getElementById('chatWelcome').style.display = 'flex';
+            document.getElementById('chatInterface').style.display = 'none';
+            await loadMyGroups();
+        } else {
+            showToast('error', 'Delete Failed', data.error || 'Failed to delete group');
+        }
+    } catch (error) {
+        showToast('error', 'Delete Failed', 'Failed to delete group');
+    }
+}
+
+/**
+ * Remove member from group (admin only)
+ * @param {number} userId - User ID to remove
+ */
+async function removeMember(userId) {
+    if (!confirm('Are you sure you want to remove this member from the group?')) return;
+
+    try {
+        const response = await fetch(`/api/groups/${currentGroup.id}/members/${userId}/remove`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('success', 'Success', 'Member removed successfully');
+            await selectGroup(currentGroup.id);
+        } else {
+            showToast('error', 'Remove Failed', data.error || 'Failed to remove member');
+        }
+    } catch (error) {
+        showToast('error', 'Remove Failed', 'Failed to remove member');
+    }
+}
+
+/* ==============================================
+   UTILITY FUNCTIONS
+   ============================================== */
+
+/**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} text - Text to escape
+ * @returns {string} Escaped HTML text
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+/**
+ * Format date for display in IST
+ * @param {string} timestamp - ISO timestamp
+ * @returns {string} Formatted date string
+ */
+function formatDateIST(timestamp) {
+    const date = new Date(timestamp);
+    
+    const options = {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    };
+    
+    return date.toLocaleDateString('en-IN', options).replace(',', ' at');
+}
+
+/* ==============================================
+   EVENT HANDLERS
+   ============================================== */
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal, .file-confirm-modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (currentGroup) {
+        leaveGroupRoom();
+    }
+    if (window.timestampUpdateInterval) {
+        clearInterval(window.timestampUpdateInterval);
+    }
+});
+
+</script>
+</body>
+</html>
