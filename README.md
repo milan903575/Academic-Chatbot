@@ -1,118 +1,124 @@
-# AI-Powered Academic Document Search Assistant
+# Academic Document Search Assistant
 
-A chat-first document search platform for academic institutions.
-Students and staff ask natural-language questions and receive answers grounded in uploaded institutional documents such as syllabi, handouts, slides, and policy PDFs. The system also supports real-time study groups where multiple users collaborate and query the same shared corpus.
+> A chat-first semantic search platform that lets students and staff query institutional documents using natural language — powered by OpenAI and real-time collaborative study groups.
 
-***
+---
+
+## Overview
+
+Academic Document Search Assistant is a full-stack AI application built for academic institutions. It enables students and staff to ask natural-language questions and receive contextual answers grounded in uploaded institutional content — syllabi, handouts, lecture slides, and policy documents. The platform also supports real-time study groups where multiple users collaboratively query a shared document corpus.
+
+---
 
 ## Features
 
-- Chat-based Q\&A over institutional content (syllabi, notes, policies, slides).
-- Answer generation grounded in uploaded documents using OpenAI APIs and retrieval.
-- Role-based access: admin can upload and manage documents; students can query and join groups.
-- Real-time study groups so multiple students can chat with the same document set together.
-- Containerized deployment with Docker and Docker Compose for easy setup.
+- **Semantic Q&A** — Ask natural-language questions; get answers grounded in uploaded institutional documents
+- **Document Management** — Admins upload and manage PDFs, slides, handbooks, and policies
+- **Role-Based Access Control** — Separate Admin and Student roles with distinct permissions
+- **Real-Time Study Groups** — Multiple students can query the same document set collaboratively via live chat
+- **Containerized Deployment** — Fully Dockerized setup via Docker Compose for consistent environments
 
-***
+---
 
 ## Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Flask (Python)
-- **Database:** MySQL
-- **AI:** OpenAI API (chat and retrieval)
-- **Dev Tools:** Docker, VS Code
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Flask (Python) |
+| Database | MySQL |
+| AI / Retrieval | OpenAI API (GPT-4), FAISS |
+| Real-Time | SocketIO, WebSockets |
+| Infrastructure | Docker, Docker Compose |
 
-***
+---
 
-## Prerequisites
+## Getting Started
 
-- Docker installed
-- OpenAI API key
-- MySQL instance or compatible MySQL service (can also run via Docker)
+### Prerequisites
 
-***
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose installed
+- An active [OpenAI API key](https://platform.openai.com/account/api-keys)
+- A reachable MySQL instance (can be run via Docker)
 
-## Environment Configuration
+---
 
-1. In the `backend/` directory, copy the example environment file:
+### Environment Setup
+
+Navigate to the `backend/` directory and create a `.env` file from the provided example:
+
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-2. Open `.env` and replace the placeholders with your actual values:
-```env
-# OpenAI API Key
-OPENAI_API_KEY=your-openai-api-key-here
+Open `.env` and fill in your credentials:
 
-# Flask Configuration
-SECRET_KEY=your-super-secret-key-change-this-in-production
+```env
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+
+# Flask
+SECRET_KEY=your_secret_key
 FLASK_ENV=production
 PYTHONUNBUFFERED=1
 PORT=5000
 
-# MySQL Database Configuration
-DB_HOST=your-database-host
-DB_PORT=your-database-port
-DB_USER=your-database-username
-DB_PASSWORD=your-database-password
-DB_NAME=your-database-name
-DATABASE_URL=mysql+pymysql://your-database-username:your-database-password@your-database-host:your-database-port/your-database-name?charset=utf8mb4
+# MySQL
+DB_HOST=your_db_host
+DB_PORT=3306
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=your_db_name
+DATABASE_URL=mysql+pymysql://your_db_user:your_db_password@your_db_host:3306/your_db_name?charset=utf8mb4
 
-# Admin Login Credentials (change in production)
-ADMIN_USERNAME=your-admin-username
-ADMIN_PASSWORD=your-admin-password
+# Admin credentials
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=your_admin_password
 
-# CORS Configuration
+# CORS
 ALLOWED_ORIGINS=http://localhost,http://localhost:3000,http://localhost:8080
 ```
 
-Make sure the database credentials match a reachable MySQL instance and that the user has permission to create tables.
+> The MySQL user requires `CREATE`, `SELECT`, `INSERT`, `UPDATE`, and `DELETE` privileges on the configured database.
 
-***
+---
 
-## Running with Docker
+### Running with Docker
 
-From the project root (where `docker-compose.yml` lives):
+From the project root:
 
 ```bash
 docker-compose build
 docker-compose up -d
 ```
 
-To follow backend logs:
+To stream backend logs:
 
 ```bash
 docker-compose logs -f backend
 ```
 
+The application will be available at `http://localhost`.
 
-***
+---
 
-## Accessing the Application
+## Usage
 
-Once the containers are running:
+### Admin
 
-- Open `http://localhost` or `http://localhost/index.html` in your browser.
+1. Navigate to `http://localhost` and log in with Admin credentials
+2. Upload institutional documents (PDFs, lecture slides, handbooks, policies)
+3. Uploaded files are automatically processed and indexed for semantic search
 
+### Student
 
-### Admin flow
+1. Log in or register as a Student
+2. Use the chat interface to ask questions about any uploaded document
+3. Create or join a study group to query documents collaboratively in real time
 
-1. On the login screen, choose **Admin**.
-2. Log in using the credentials configured in `.env` (`ADMIN_USERNAME` and `ADMIN_PASSWORD`).
-3. Upload institutional documents (PDFs, slides, handouts, policies, etc.).
-4. Watch `docker-compose logs -f backend` to verify that files are processed and indexed correctly.
-
-### Student / user flow
-
-1. Create a new **Student** user from the UI (if enabled) or use an existing account.
-2. Start interacting with the chat assistant to ask questions about uploaded content.
-3. Join or create a study group to collaborate with other users and query the same document set in real time.
-
-***
+---
 
 ## Notes
 
-- Costs depend on OpenAI API usage; set appropriate rate limits and monitoring in production.
-
+- API usage costs are determined by OpenAI's pricing. 
