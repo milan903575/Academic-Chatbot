@@ -118,7 +118,15 @@ The application will be available at `http://localhost`.
 3. Create or join a study group to query documents collaboratively in real time
 
 ---
+## Screenshots
 
+### Student — Chat Interface
+<img width="1471" height="971" alt="Image" src="https://github.com/user-attachments/assets/2434ffad-abbe-4599-a731-3cd70afd4908" />
+
+### Real-Time Study Group
+<img width="1796" height="863" alt="Image" src="https://github.com/user-attachments/assets/08ddad53-73fb-452a-ac7c-091dc5b1ede8" />
+
+> Additional screenshots and a full feature walkthrough are available on the [portfolio](#).
 ## Notes
 
 - API usage costs are determined by OpenAI's pricing. 
